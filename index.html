@@ -1,0 +1,681 @@
+<html>
+	<title>FilterShoppe</title>
+<!-- 	<a href='https://github.com/ksabalo'><h1 id='pageHead'>FilterShoppe</h1></a> -->
+  <h1 id='pageHead'>FilterShoppe</h1>
+	<p style='text-align:center;font-style:oblique'>A digital lomography workstation</p>
+	<div id='navDivider' class='separator' >
+		<nav id='navigationTabs'>
+			<a href='#1' onclick='togglePage("consoleElements","aboutElements")'>Console</a> |
+			<a href='#2' onclick='togglePage("aboutElements","consoleElements")'>About</a> |
+			<a href='https://github.com/ksabalo' target="_blank">GitHub</a>
+		</nav>
+	</div>
+	<div id='consoleElements'>
+		<div id='canviiEssentials' class='separator'>
+			<div id='canvii' class=''>
+				<br/>
+				<canvas id='originalImageCanvas'></canvas>
+				<canvas id='editingImageCanvas'></canvas>
+			</div>
+			<div id='canviiStagingButtons' class='button'>
+				<label for='originalImage' class='button' onchange='uploadOriginalImage()'>
+					<!-- <div> -->
+					Upload | 
+					<input style='display:none;' id='originalImage' class='button' type='file' multiple='false' accept='image/*' value='Upload' onchange='uploadOriginalImage()'>
+					<!-- </div> -->
+				</label>
+				<label for='revertImageButton' class='button' onclick='revertImage()'>
+					Revert | 
+					<input style='display:none;' id='revertImageButton' class='button' type='button' value='Reset'><!--  onclick='revertImage()'> -->
+				</label>
+				<label for='cacheImageButton' class='button'>
+					Cache
+					<input style='display:none;' id='cacheImageButton' class='button' type='button' value='Transfer' onclick='cacheImage()'>
+				</label>
+			</div>
+			<div id='canviiZoomControls' class='controllers'>
+				<br/>
+				<input class="slider" id="originalZoomer" type="range" min=1 max=2 value="0" step="0.01" oninput="zoom('originalImageCanvas','originalZoomer')">
+				<input class="slider" id="editingZoomer" type="range" min=1 max=2 value="0" step="0.01" oninput="zoom('editingImageCanvas','editingZoomer')">
+				<br/>
+				<label for='resetZoomButton' class='button' onclick='resetZoom()'>
+					Reset Zoom
+					<input style='display:none;' class='button' type='button' value='Reset Zoom?'>
+				</label>
+				<br/>
+				<br/>
+			</div>
+			<div id='canviiOrientationHandles'>
+				<select id='flipSelector' onchange='filterImageToggle()'>
+					<option class='selectorDefault' value='none'>Flip Axis</option>
+					<option id='horizontalFlip' onclick='flipHorizontal(editingImage)' value='h'>Horizontal Flip</option>
+					<option id='verticalFlip' onclick='flipVertical(editingImage)' value='v'>Vertical Flip</option>
+				</select>
+				<br/>
+				<label for='rotateImageButton' class='button' onclick='flipToggler()'>
+					Flip
+					<input style='display:none;' class='button' type='button' value='Apply Rotation' onclick='flipToggler()'>
+					<br/>
+					<br/>
+				</label>
+			</div>
+		</div>
+		<div id='controlPanel' class='wrapper'>
+			<select id="primaryOptionSelector" value='Editing Modes' onchange='primaryOptionToggler()'>
+				<option class='selectorDefault' value='none'>Edit Modes</option>
+				<!-- <option class='primaryOption' value='border'>Add Border</option> -->
+				<option class='primaryOption' value='comb'>Combine</option>
+				<!-- <option class='primaryOption' value='text'>Apply Text</option> -->
+				<option class='primaryOption' value='filter'>Filter</option>
+			</select>
+			<br/>
+			<br/>
+			<div id='secondaryOptions' style='display:none;'>
+				<div id='borderControls' class='secondaryOptionPanel' style='display:none;'>
+					<input class='slider' id='borderThickness' type='range' min='0' max='90' step='1' value='0' onchange='setBorderThickness()'>
+					<input id="borderColourPicker" type="color" value="#111159" onchange="setBorderColour()">
+				</div>
+				<div id='combinatorialControls' class='secondaryOptionPanel'>
+					<select id='combinatorialModeSelector' onchange='combinatorialToggler()'>
+						<option class='selectorDefault' value='none'>Combinatorial Modes</option>
+						<option class='combination' value='greenScreen'>Green Screen</option>
+						<option class='combination' value='blend'>Blend</option>
+					</select></br>
+					<div id='combinatorialModePanels' style='display:none;'>
+						<div id='greenScreenControls' class='combinatorialModePanel'>
+							<label class='button' for='greenScreenBackgroundImage'>
+								Upload Background
+								<input style='display:none;' class='button' type='file' multiple='false' accept='image/*' id='greenScreenBackgroundImage' onchange='uploadGreenScreenBackground()'>
+							</label>
+							<input class='slider' id='criticalGreenSetter' type='range' value='250' min='0' max='255' step='1' onchange='setCriticalGreen()'>
+						</div>
+						<div id='blendControls' class='combinatorialModePanel'>
+							</br>
+							<label for='blendUpload' class='button' onchange='uploadBlendLayer()'>
+								Upload Blending Layer
+								<input style='display:none;' id='blendUpload' class='button' type='file' multiple='false' accept='image/*' onchange='uploadBlendLayer()	'>
+							</label><br/>Please note that the uploaded image will be treated as background for all blends<br/>Remember to choose a new background <i>before</i> changing the mode if you would like to use a different mode on a new image<br/>
+							<select id='blendModeSelector' onchange='toggleCustomBlend()'>
+								<option class='selectorDefault'>Blend Modes</option>
+								<option class='blendModes' onclick='applyPlusLighter(editingImage,blendingImage)'>Plus Lighter</option>
+								<option class='blendModes' onclick='applyPlusDarker(editingImage,blendingImage)'>Plus Darker</option>
+								<option class='blendModes' onclick='applyDifference(editingImage,blendingImage)'>Difference</option>
+								<option class='blendModes' onclick='applySubtract(editingImage,blendingImage)'>Subtract</option>
+								<option class='blendModes' onclick='applyDarkenOnly(editingImage,blendingImage)'>Darken Only</option>
+								<option class='blendModes' onclick='applyLightenOnly(editingImage,blendingImage)'>Lighten Only</option>
+								<option class='blendModes' onclick='applyW3CSoftlight(editingImage,blendingImage)'>Softlight (W3C)</option>
+								<option class='blendModes' onclick='applyIllusionsHUSoftlight(editingImage,blendingImage)'>Softlight (IllusionsHU)</option>
+								<option class='blendModes' onclick='applyPhotoShopSoftlight(editingImage,blendingImage)'>Softlight (Photoshop)</option>
+								<option class='blendModes' onclick='applyPegtopSoftlight(editingImage,blendingImage)'>Softlight (Pegtop)</option>
+								<option class='blendModes' onclick='applyOverlay(editingImage,blendingImage)'>Overlay</option>
+								<option class='blendModes' onclick='applyMultiply(editingImage,blendingImage)'>Multiply</option>
+								<option class='blendModes' onclick='applyDivide(editingImage,blendingImage)'>Divide</option>
+								<option class='blendModes' onclick='applyScreen(editingImage,blendingImage)'>Screen</option>
+								<option class='blendModes' onclick='applyPegtopHappyAccident1(editingImage,blendingImage)'>Happy Accident #1</option>
+								<option class='blendModes' value='custom'>Custom</option>
+							</select>
+							<!-- <div id='customFilterPanel' class='customPanel' style='display:none;'></div> -->
+							<div id='customBlendPanel' class='customPanel' style='display:none;'>
+								<!-- <label for='originalImage' class='button' onchange='uploadOriginalImage()'> -->
+									<!-- Upload   -->
+									<!-- <input style='display:none;' id='originalImage' class='button' type='file' multiple='false' accept='image/*' value='Upload' onchange='uploadOriginalImage()'> -->
+								<!-- </label></br> -->
+								<input id='customBlendNameBox' placeholder='nameOfYourMainFunction'></br>
+								<!-- <button id='customBlendFunctionCompile' onclick='compileCustomEffect()'>Compile</button> -->
+								<button id='customBlendFunctionTrigger' onclick='executeCustomBlend()'>Execute</button>
+								<input type='button' id='customBlendExampleButton' value='Hide Example' onclick='exampleToggle("customBlendExampleButton","customBlendExample")'></br>
+								<!-- <button id='customBlendTestingButton'><a href='http://www.dukelearntoprogram.com/course1/example/index.php' style='text-decoration:none;'>Testing Station</a></button></br> -->
+								<textarea readonly id='customBlendExample' style='height:150px;width:800px;background-color:#008080;' wrap='off'>
+// Example
+// Remember to enter the name of your function otherwise we won't know what to execute!
+// Also remember to use the 'editingImageCanvas' canvas as shown below!
+function dimensions(img) {
+	return [img.getWidth(),img.getHeight()];
+}
+function applyLightenOnly(fore,back) {
+	back.setSize(dimensions(fore)[0],dimensions(fore)[1]);
+	var other = new SimpleImage(dimensions(fore)[0],dimensions(fore)[1]);
+	for (var px of fore.values()) {
+		x = px.getX();
+		y = px.getY();
+		bpx = back.getPixel(x,y);
+		opx = other.getPixel(x,y);
+		opx.setRed(Math.max(px.getRed(),bpx.getRed()));
+		opx.setBlue(Math.max(px.getBlue(),bpx.getBlue()));
+		opx.setGreen(Math.max(px.getGreen(),bpx.getGreen()));
+	}
+	// return other;
+	editingImage = other;
+	var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+}
+								</textarea></br>
+								<textarea id='customBlendText' style='height:350px;width:800px;' wrap='off'></textarea>
+								<script id='customFilterTarget'></script>
+							</div>
+							<!-- <input id='overlayBalance' type='range' value='0' min='-100' max='100' step='1' onchange='setOverlayBlend()'> -->
+						</div>
+					</div>
+				</div>
+				<div id='textControls' class='secondaryOptionPanel' style='display:none;'>
+					<select id=''>
+						<option class='selectorDefault' onchange='updateFont()'>Select Font</option>
+						<option class='fontName' id='impact'>Impact</option>
+						<option class='fontName' id='helvetica'>Helvetica</option>
+						<option class='fontName' id='baskerville'>Baskerville</option>
+						<option class='fontName' id='times'>Times</option>
+						<option class='fontName' id='gotham'>Gotham</option>
+						<option class='fontName' id='akzidenz'>Akzidenz Grotesk</option>
+					</select>
+					<input id="textColour" type="color" value="#111159" onchange="updateTextColour()">
+					<input class='slider' id='fontSize' type='range' value='10' min='7' max='50' step='.5' onchange='updateTextSize()'>
+					<!-- <input id='textBox' spellcheck='true' type='message-box' value='Enter your text here' onchange='updateTextContent()'> -->
+					<br/>
+					<textarea contenteditable='true' id='textBox' spellcheck='true' type='message-box' value='' onchange='updateTextContent()'>Enter your text here</textarea>
+				</div>
+				<div id='filterControls' class='secondaryOptionPanel'>
+					<p id='filterWarning'>WARNING: Filters are applied automatically. Remember to cache the image before you advance with any unfamiliar filter</p>
+					<select id='filterSelector' onchange='toggleCustomFilter()'>
+						<option class='selectorDefault'>Filter Modes</option>
+						<option class='filterOption' onclick='applySepia(editingImage)'>Sepia</option>
+						<option class='filterOption' onclick='applyGreyScale(editingImage)'>Grey-Scale</option>
+						<option class='filterOption' onclick='applyNegative(editingImage)'>Negative</option>
+						<option class='filterOption' onclick='applyRouge(editingImage)'>Rouge</option>
+						<option class='filterOption' onclick='applyAqua(editingImage)'>Aqua</option>
+						<option class='filterOption' onclick='applyLime(editingImage)'>Lime</option>
+						<option class='filterOption' onclick='applyGhostburn(editingImage)'>Ghostburn</option>
+						<option class='filterOption' onclick='applyLuckyShuffle(editingImage)'>Lucky Shuffle</option>
+						<option class='filterOption' onclick='applyBlur(editingImage)'>Blur</option>
+						<option class='filterOption' onclick='applyVerticalRainbow(editingImage)'>Vertical Rainbow</option>
+						<option class='filterOption' onclick='applyHorizontalRainbow(editingImage)'>Horizontal Rainbow</option>
+						<option class='filterOption' onclick='applyTricolor(editingImage)'>Tricolor</option>
+						<option class='filterOption' onclick='applyBackwardDistribute(editingImage)'>Backward Distribute</option>
+						<option class='filterOption' onclick='applyForwardDistribute(editingImage)'>Forward Distribute</option>
+						<option class='filterOption' onclick='applyStochasm(editingImage)'>Stochasm</option>
+						<option class='filterOption' onclick='applyRGInversion(editingImage)'>RGInversion</option>
+						<option class='filterOption' onclick='applyRBInversion(editingImage)'>RBInversion</option>
+						<option class='filterOption' onclick='applyGBInversion(editingImage)'>BGInversion</option>
+						<option class='filterOption' onclick='applyBRG(editingImage)'>RGB to BRG</option>
+						<option class='filterOption' onclick='applyGBR(editingImage)'>RGB to GBR</option>
+						<option class='filterOption' value='custom'>Custom</option>
+					</select>
+					<div id='customFilterPanel' class='customPanel' style='display:none;'>
+						<input id='customFilterNameBox' placeholder='nameOfYourMainFunction'></br>
+						<!-- <button id='customFilterFunctionCompile' onclick='compileCustomEffect()'>Compile</button> -->
+						<button id='customFilterFunctionTrigger' onclick='executeCustomFilter()'>Execute</button>
+						<input type='button' id='customFilterExampleButton' value='Hide Example' onclick='exampleToggle("customFilterExampleButton","customFilterExample")'></br>
+						<!-- <a id='customFilterTestingButton' href='http://www.dukelearntoprogram.com/course1/example/index.php' style='text-decoration:none;'>Testing Station</a></br> -->
+						<textarea readonly id='customFilterExample' style='height:150px;width:800px;background-color:#008080;' wrap='off'>
+// Example
+// Remember to enter the name of your function otherwise we won't know what to execute!
+// Also remember to use the 'editingImageCanvas' canvas as shown below!	
+function average(pixel) {
+	return (pixel.getRed() + pixel.getGreen() + pixel.getRed())/3
+}
+function applyGreyScale(img) {
+	for (let px of img.values()) {
+		var avg = average(px);
+		px.setBlue(avg);
+		px.setGreen(avg);
+		px.setRed(avg);
+	}
+	// return img;
+	var canny = document.getElementById("editingImageCanvas");
+	img.drawTo(canny);
+}
+						</textarea></br>
+						<textarea id='customFilterText' style='height:350px;width:800px;' wrap='off'></textarea>
+						<script id='customFilterTarget'></script>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id='footer' class='separator' >
+				<p id='saveNote'>
+					right-click the image on the right if you'd like to download your work.
+          <br>Use the sliders to zoom.
+				<br><i>Reverting</i> enables you to go back to the last cached version.<br><i>Caching</i> enables you to log your progress and return to earlier steps in the process if need be.</p>
+		</div>
+	</div>
+	<div id='aboutElements' style='display:none;'>
+		<body>
+			<img id='aboutImage' src=''>
+			<p id='aboutText'>
+				Note: This application will not store any of your images or data. All processing will be done by your web browser.</br></br>
+				
+				
+				This app was arranged by Kenneth Sabalo.<br>
+				Though the course was never completed, the app itself is an extension  of some assignments from Duke University's Java Team's course on the foundations of web development with JavaScript, CSS, and html, and uses their SimpleImage Library extensively.<br>
+				The following links direct to pages whose information was used in the development process:</br></br>
+				(* For codepen users: control/command-click on the links below)
+			</p>
+			<div id='aboutURLs' style='text-align:center;'>
+				<a style='text-align:center;' href='http://www.dukelearntoprogram.com/course1'>Course Resources</a></br>
+				<a style='text-align:center;' href='https://en.wikipedia.org/wiki/Blend_modes'>Blend Modes</a></br>
+				<a id='customFilterTestingButton' href='http://www.dukelearntoprogram.com/course1/example/index.php'>Testing Station</a>
+				<!--style='text-decoration:none;' --> 
+				<!-- <a style='text-align:center;' href='https://processing.org/tutorials/pixels/'>Processing.org</a><br /> -->
+				<!-- <a style='text-align:center;' href='https://en.wikipedia.org/wiki/Kernel_(image_processing)'>Kernels.wiki</a><br /> -->
+				<!-- <a style='text-align:center;' href='https://www.dyclassroom.com/image-processing-project/how-to-convert-a-color-image-into-sepia-image'>DYClassroom</a> -->
+			</div><p>Thanks for stopping by. Hope your time was well spent!</p>
+		</body>
+	</div>
+</html>
+<script id='simpleImageCode'>
+// Copyright 2015 Owen Astrachan, Drew Hilton, Susan Rodger, Robert Duvall
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Created by Nick Parlante
+// Updated by Robert Duvall
+
+
+// Represents one pixel in a SimpleImage, supports rgb get/set.
+SimplePixel = function (simple_image, x, y) {
+    __SimpleImageUtilities.funCheck('SimplePixel', 3, arguments.length);
+    this.container = simple_image;
+    this.x = x;
+    this.y = y;
+};
+
+SimplePixel.prototype = {
+    constructor: SimplePixel,
+    getX: function () {
+        __SimpleImageUtilities.funCheck('getX', 0, arguments.length);
+        return this.x;
+    },
+    getY: function () {
+        __SimpleImageUtilities.funCheck('getY', 0, arguments.length);
+        return this.y;
+    },
+    getRed: function () {
+        __SimpleImageUtilities.funCheck('getRed', 0, arguments.length);
+        return this.container.getRed(this.x, this.y);
+    },
+    getGreen: function () {
+        __SimpleImageUtilities.funCheck('getGreen', 0, arguments.length);
+        return this.container.getGreen(this.x, this.y);
+    },
+    getBlue: function () {
+        __SimpleImageUtilities.funCheck('getBlue', 0, arguments.length);
+        return this.container.getBlue(this.x, this.y);
+    },
+    getAlpha: function () {
+        __SimpleImageUtilities.funCheck('getAlpha', 0, arguments.length);
+        return this.container.getAlpha(this.x, this.y);
+    },
+    setRed: function (val) {
+        __SimpleImageUtilities.funCheck('setRed', 1, arguments.length);
+        this.container.setRed(this.x, this.y, val);
+    },
+    setGreen: function (val) {
+        __SimpleImageUtilities.funCheck('setGreen', 1, arguments.length);
+        this.container.setGreen(this.x, this.y, val);
+    },
+    setBlue: function (val) {
+        __SimpleImageUtilities.funCheck('setBlue', 1, arguments.length);
+        this.container.setBlue(this.x, this.y, val);
+    },
+    setAlpha: function (val) {
+        __SimpleImageUtilities.funCheck('setAlpha', 1, arguments.length);
+        this.container.setAlpha(this.x, this.y, val);
+    },
+    setAllFrom: function (pixel) {
+        __SimpleImageUtilities.funCheck('setAllFrom', 1, arguments.length);
+        this.setRed(pixel.getRed());
+        this.setGreen(pixel.getGreen());
+        this.setBlue(pixel.getBlue());
+        this.setAlpha(pixel.getAlpha());
+    },
+    toString: function () {
+        return 'r:' + this.getRed() + ' g:' + this.getGreen() + ' b:' + this.getBlue();
+    },
+    // Render pixel as string
+    getString: function () {
+        return this.toString();
+    }
+};
+
+
+// Note there is an Image built in, so don't use that name.
+// A SimpleImage can be created with a url, size, or an existing htmlImage or canvas
+SimpleImage = function () {
+    if (arguments.length < 0 || arguments.length > 2) {
+        __SimpleImageUtilities.funCheck('SimpleImage', 1, arguments.length);
+        return null;
+    }
+    // function map for to support "overloaded constructor"
+    var funMap = [
+        function () {
+            return __SimpleImageUtilities.EMPTY_IMAGE;
+        },
+        function (source) {
+            if (source instanceof HTMLImageElement) {
+                return source;
+            } else if (typeof source == 'string') {
+                return __SimpleImageUtilities.makeHTMLImageFromURL(source, this);
+            } else if (source instanceof HTMLInputElement && source.type == 'file') {
+                return __SimpleImageUtilities.makeHTMLImageFromInput(source.files[0], this);
+            } else if (source instanceof SimpleImage) {
+                return source.canvas;
+            } else if (source instanceof HTMLCanvasElement) {
+                return source;
+            } else {
+                __SimpleImageUtilities.throwError('Unrecognized value used to create a SimpleImage: ' + source);
+            }
+        },
+        function (width, height) {
+            if (width > 0 && height > 0) {
+                return __SimpleImageUtilities.makeHTMLImageFromSize(width, height);
+            } else {
+                __SimpleImageUtilities.throwError('Unable to create a SimpleImage with a negative width or height [' + width + 'x' + height + ']');
+            }
+        }
+    ];
+
+    // call appropriate constructor
+    var htmlImage = funMap[arguments.length].apply(this, arguments);
+    // actual content is backed by an invisible canvas
+    this.canvas = __SimpleImageUtilities.makeHTMLCanvas('SimpleImageCanvas');
+    this.canvas.style.display = 'none';
+    this.context = this.canvas.getContext('2d');
+    // when image is loaded, it will fill this in
+    this.imageData = null;
+    // check to see if we can complete the constructor now instead of waiting
+    if (htmlImage != null && (htmlImage instanceof HTMLCanvasElement || htmlImage.complete)) {
+        this.__init(htmlImage);
+    }
+    this.ACCEPTED_FILES = 'image.*';
+}
+
+
+SimpleImage.prototype = {
+    constructor: SimpleImage,
+    complete: function () {
+        return this.imageData != null;
+    },
+    getWidth: function () {
+        __SimpleImageUtilities.funCheck('getWidth', 0, arguments.length);
+        return this.width;
+    },
+    getHeight: function () {
+        __SimpleImageUtilities.funCheck('getHeight', 0, arguments.length);
+        return this.height;
+    },
+    getRed: function (x, y) {
+        __SimpleImageUtilities.funCheck('getRed', 2, arguments.length);
+        return this.imageData.data[this.__getIndex('getRed', x, y)];
+    },
+    getGreen: function (x, y) {
+        __SimpleImageUtilities.funCheck('getGreen', 2, arguments.length);
+        return this.imageData.data[this.__getIndex('getGreen', x, y) + 1];
+    },
+    getBlue: function (x, y) {
+        __SimpleImageUtilities.funCheck('getBlue', 2, arguments.length);
+        return this.imageData.data[this.__getIndex('getBlue', x, y) + 2];
+    },
+    getAlpha: function (x, y) {
+        __SimpleImageUtilities.funCheck('getAlpha', 2, arguments.length);
+        return this.imageData.data[this.__getIndex('getAlpha', x, y) + 3];
+    },
+    // Changes to the pixel write back to the image.
+    getPixel: function (x, y) {
+        __SimpleImageUtilities.funCheck('getPixel', 2, arguments.length);
+        __SimpleImageUtilities.rangeCheck(x, 0, this.getWidth(), 'getPixel', 'x', 'wide');
+        __SimpleImageUtilities.rangeCheck(y, 0, this.getHeight(), 'getPixel', 'y', 'tall');
+        return new SimplePixel(this, x, y);
+    },
+
+    setRed: function (x, y, value) {
+        __SimpleImageUtilities.funCheck('setRed', 3, arguments.length);
+        this.imageData.data[this.__getIndex('getRed', x, y)] = __SimpleImageUtilities.clamp(value);
+    },
+    setGreen: function (x, y, value) {
+        __SimpleImageUtilities.funCheck('setGreen', 3, arguments.length);
+        this.imageData.data[this.__getIndex('getGreen', x, y) + 1] = __SimpleImageUtilities.clamp(value);
+    },
+    setBlue: function (x, y, value) {
+        __SimpleImageUtilities.funCheck('setBlue', 3, arguments.length);
+        this.imageData.data[this.__getIndex('getBlue', x, y) + 2] = __SimpleImageUtilities.clamp(value);
+    },
+    setAlpha: function (x, y, value) {
+        __SimpleImageUtilities.funCheck('setAlpha', 3, arguments.length);
+        this.imageData.data[this.__getIndex('getAlpha', x, y) + 3] = __SimpleImageUtilities.clamp(value);
+    },
+    setPixel: function (x, y, pixel) {
+        __SimpleImageUtilities.funCheck('setPixel', 3, arguments.length);
+        __SimpleImageUtilities.rangeCheck(x, 0, this.getWidth(), 'setPixel', 'x', 'wide');
+        __SimpleImageUtilities.rangeCheck(y, 0, this.getHeight(), 'setPixel', 'y', 'tall');
+        this.setRed(x, y, pixel.getRed());
+        this.setBlue(x, y, pixel.getBlue());
+        this.setGreen(x, y, pixel.getGreen());
+        this.setAlpha(x, y, pixel.getAlpha());
+    },
+    // Scales contents of SimpleIage to the given size
+    setSize: function (width, height) {
+        __SimpleImageUtilities.funCheck('setSize', 2, arguments.length);
+        width = Math.floor(width);
+        height = Math.floor(height);
+        if (width > 0 && height > 0) {
+            // make sure we have the most current changes
+            __SimpleImageUtilities.flush(this.context, this.imageData);
+            this.imageData = __SimpleImageUtilities.changeSize(this.canvas, width, height);
+            this.width = width;
+            this.height = height;
+            this.canvas.width = width;
+            this.canvas.height = height;
+        }
+        else {
+            __SimpleImageUtilities.throwError('You tried to set the size of a SimpleImage to a negative width or height [' + width + 'x' + height + ']');
+        }
+    },
+    // Draws to the given canvas, setting its size to match SimpleImage's size
+    drawTo: function (toCanvas) {
+        if (this.imageData != null) {
+            __SimpleImageUtilities.flush(this.context, this.imageData);
+            toCanvas.width = this.getWidth();
+            toCanvas.height = this.getHeight();
+            toCanvas.getContext('2d').drawImage(this.canvas, 0, 0, toCanvas.width, toCanvas.height);
+        }
+        else {
+            var myself = this;
+            setTimeout(function() {
+                myself.drawTo(toCanvas);
+            }, 100);
+        }
+    },
+    // Export an image as an linear array of pixels that can be iterated over
+    toArray: function () {
+        __SimpleImageUtilities.funCheck('toArray', 0, arguments.length);
+        var array = new Array();
+        // nip 2012-7
+        // 1. simple-way (this is as good or faster in various browser tests)
+        // var array = new Array(this.getWidth() * this.getHeight());
+        // 2. change to cache-friendly y/x ordering
+        // Non-firefox browsers may benefit
+        for (var y = 0; y < this.getHeight(); y++) {
+            for (var x = 0; x < this.getWidth(); x++) {
+                  //array[i++] = new SimplePixel(this, x, y);  // 2.
+                  array.push(new SimplePixel(this, x, y));  // 1.
+            }
+        }
+        return array;
+    },
+    // Support iterator within for loops (eventually)
+    values: function() {
+        __SimpleImageUtilities.funCheck('values', 0, arguments.length);
+        return this.toArray();
+    },
+    // Better name than values if we have to use it
+    pixels: function() {
+        return this.values();
+    },
+
+    // Private methods: should not be called publicly, but it should not hurt if it is
+    // Completes the construction of this object once the htmlImage is loaded
+    __init: function (img) {
+        try {
+            this.id = img.id;
+            // this is a hack to make three different cases work together:
+            // - small empty image, thumbnail images, and canvases
+            this.width = ('naturalWidth' in img) ? Math.max(img.naturalWidth, img.width) : img.width;
+            this.height = ('naturalHeight' in img) ? Math.max(img.naturalHeight, img.height) : img.height;
+            this.canvas.width = this.width;
+            this.canvas.height = this.height;
+            // are we copying an already loaded image or drawing it fresh
+            if (img instanceof HTMLCanvasElement) {
+                var canvasData = img.getContext('2d').getImageData(0, 0, this.width, this.height);
+                this.context.putImageData(canvasData, 0, 0);
+            }
+            else {
+                this.context.drawImage(img, 0, 0, this.width, this.height);
+            }
+            this.imageData = this.context.getImageData(0, 0, this.width, this.height);
+        }
+        catch (err) {
+            console.log(err);
+            __SimpleImageUtilities.throwError('The name you used to create a SimpleImage was not correct: ' + img.id);
+        }
+    },
+    // computes index into 1-d array, and checks correctness of x,y values
+    __getIndex: function (funName, x, y) {
+        __SimpleImageUtilities.rangeCheck(x, 0, this.getWidth(), funName, 'x', 'wide');
+        __SimpleImageUtilities.rangeCheck(y, 0, this.getHeight(), funName, 'y', 'tall');
+        return (Math.floor(x) + Math.floor(y) * this.getWidth()) * 4;
+    }
+};
+
+
+// Private helper functions, add __ to reduce chance they will conflict with anyone else's method names
+var __SimpleImageUtilities = (function () {
+    // private globals
+    // image needed to seed "sized" image
+    var EMPTY_IMAGE_DATA = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAQAAAAnZu5uAAAAAXNSR0IArs4c6QAAABVJREFUeJxiYPgPhyQwAQAAAP//AwCgshjoJhZxhgAAAABJRU5ErkJggg==';
+    // number of canvases created to hold images
+    var globalCanvasCount = 0;
+    // load image by wrapping it in an HTML element
+    function makeHTMLImage (url, name, simpleImage, loadFunc) {
+        if (loadFunc == null) {
+            loadFunc = function() {
+                simpleImage.__init(this);
+                console.log('loaded image: ' + simpleImage.id);
+            }
+        }
+        var img = new Image();
+        img.onload = loadFunc;
+        img.src = url;
+        img.id = name;
+        img.style.display = 'none';
+        return img;
+    }
+
+    // public utility functions
+    return {
+        // make a blank image so it is cached for future uses
+        EMPTY_IMAGE: makeHTMLImage(EMPTY_IMAGE_DATA, 'EMPTY', null, function () {}),
+
+        // create a canvas element
+        makeHTMLCanvas: function (prefix) {
+            var canvas = document.createElement('canvas');
+            canvas.id = prefix + globalCanvasCount;
+            canvas.style.display = 'none';
+            canvas.innerHTML = 'Your browser does not support HTML5.'
+            globalCanvasCount++;
+            return canvas;
+        },
+
+        // get image from uploaded file input
+        makeHTMLImageFromInput: function (file, simpleImage) {
+            console.log('creating image: ' + file.name);
+            var reader = new FileReader();
+            reader.onload = function() {
+                makeHTMLImage(this.result, file.name.substr(file.name.lastIndexOf('/') + 1), simpleImage);
+            }
+            reader.readAsDataURL(file);
+            return null;
+        },
+
+        // get image from a relative URL
+        makeHTMLImageFromURL: function (url, simpleImage) {
+            var name = url.substr(0, url.indexOf(';'));
+            console.log('creating image: ' + name);
+            if (url.substr(0, 4) != 'http') {
+                return makeHTMLImage(url, name, simpleImage);
+            }
+            else {
+                // does not work --- loading image from URL taints the canvas so we cannot use it :(
+                __SimpleImageUtilities.throwError('Unfortunately you cannot create a SimpleImage directly from a URL: ' + url);
+            }
+        },
+
+        // create an empty image of the given size
+        makeHTMLImageFromSize: function (width, height) {
+            console.log('creating image: ' + width + 'x' + height);
+            var img = __SimpleImageUtilities.EMPTY_IMAGE.cloneNode(true);
+            img.width = width;
+            img.height = height;
+            return img;
+        },
+
+        // set size of the image to the given values, scaling the pixels
+        changeSize: function (canvasOld, newWidth, newHeight) {
+            var canvasNew = __SimpleImageUtilities.makeHTMLCanvas('setSize_');
+            canvasNew.width = newWidth;
+            canvasNew.height = newHeight;
+            // draw old canvas to new canvas
+            var contextNew = canvasNew.getContext('2d');
+            contextNew.drawImage(canvasOld, 0, 0, newWidth, newHeight);
+            return contextNew.getImageData(0, 0, newWidth, newHeight);
+        },
+
+        // clamp values to be in the range 0..255
+        clamp: function (value) {
+            return Math.max(0, Math.min(Math.floor(value), 255));
+        },
+
+        // push accumulated local changes out to the screen
+        flush: function (context, imageData) {
+            if (imageData != null) {
+                context.putImageData(imageData, 0, 0, 0, 0, imageData.width, imageData.height);
+            }
+        },
+
+        // call this to abort with a message
+        throwError: function (message) {
+            throw new Error(message);
+        },
+
+        // called from user-facing functions to check number of arguments
+        funCheck: function (funcName, expectedLen, actualLen) {
+            if (expectedLen != actualLen) {
+                var s1 = (actualLen == 1) ? '' : 's';  // pluralize correctly
+                var s2 = (expectedLen == 1) ? '' : 's';
+                var message = 'You tried to call ' + funcName + ' with ' + actualLen + ' value' + s1 +
+                              ', but it expects ' + expectedLen + ' value' + s2 + '.';
+                // someday: think about "values" vs. "arguments" here
+                __SimpleImageUtilities.throwError(message);
+            }
+        },
+
+        // called from user-facing functions to check if given value is valid
+        rangeCheck: function (value, low, high, funName, coordName, size) {
+            if (value < low || value >= high) {
+                var message = 'You tried to call ' + funName + ' for a pixel with ' + coordName + '-coordinate of ' + value +
+                              ' in an image that is only ' + high + ' pixels ' + size +
+                              ' (valid ' + coordName + ' coordinates are ' + low + ' to ' + (high-1) + ').';
+                __SimpleImageUtilities.throwError(message);
+            }
+        }
+    };
+})();
+</script>

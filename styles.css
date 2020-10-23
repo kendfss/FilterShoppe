@@ -1,0 +1,112 @@
+html {
+/*   background-color: mediumseagreen; */
+/*   background-color: #008080; */
+  background-color: #101010;
+  font-family: trebuchet ms;
+/*   color: #614b4b; */
+  color: #611b1b;
+/*   color: #008080; */
+}
+#pageHead, a {
+  text-align: center;
+  color: #611b1b;
+/*   color: #008080; */
+}
+nav {
+  text-align: center;
+}
+
+
+#canvii, #primaryOptionSelector, #controlPanel {
+/*   border: 5px dashed #005050;
+  border-radius: 8px */
+  text-align: center;
+/*   color: #611b1b; */
+}
+#originalImageCanvas, #editingImageCanvas {
+  width: 200px;
+/*   background-color: wheat; */
+  background-color: #1b1b1b;
+  border-radius: 9px;
+/*   border: 2px dashed #005050; */
+  border: 2px dashed #611b1b;
+/*   border: 2px dashed #008080; */
+}
+#canviiEssentials {
+  text-align: center;
+}
+#canviiStagingButtons {
+/*   height:45px; */
+/*   width: 30px; */
+  color: #611b1b;
+/*   color: #008080; */
+}
+
+select {
+/*   background: wheat; */
+/*   background: #1b1b1b; */
+  background: #101010;
+  border-radius: 25px;
+  text-align: center;
+  color: #611b1b;
+/*   color: #614b4b; */
+/*   color: #008080; */
+}
+.button, [type='button'], button {
+  border-radius: 25px;
+  border: none;
+  text-align: center;
+  background: none;
+/*   font-size: 12px; */
+/*   color: #614b4b; */
+  color: #611b1b;
+/*   color: #008080; */
+  position: relative;
+  font-size: 20px;
+}
+select:hover {
+  font-style: oblique;
+}
+a:hover {
+  font-style: oblique;
+}
+label:hover {
+  font-style: oblique;
+}
+/* canvas:hover {
+  scale:1.025;
+} */
+button:hover {
+  font-style: oblique;
+}
+[type='button']:hover {
+  font-style: oblique;
+}
+
+.slider {
+  height: 10px;
+  border-radius: 5px;
+/*   background: wheat; */
+/*   background: wheat; */
+  background: #1b1b1b;
+  color: #008080;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 50%; 
+/*   background: #614b4b; */
+  background: #1b1b1b;
+  color: #008080;
+  cursor: pointer;
+  border: none;
+}
+.slider::-moz-range-thumb {
+  border-radius: 50%;
+/*   background: #614b4b; */
+  background: #611b1b;
+  color: #008080;
+  cursor: pointer;
+  border: none;
+}
+
