@@ -25,6 +25,7 @@ nav {
 }
 #originalImageCanvas, #editingImageCanvas {
   /* z-index: -1; */
+  position: relative;
   width: 200px;
 /*   background-color: wheat; */
   background-color: #1b1b1b;
