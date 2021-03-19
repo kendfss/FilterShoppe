@@ -24,12 +24,14 @@ nav {
 /*   color: #611b1b; */
 }
 #originalImageCanvas, #editingImageCanvas {
+  /* z-index: -1; */
   width: 200px;
 /*   background-color: wheat; */
   background-color: #1b1b1b;
-  border-radius: 9px;
+  /* border-radius: 9px; */
+  /* border: 2px dashed #611b1b; */
 /*   border: 2px dashed #005050; */
-  border: 2px dashed #611b1b;
+  
 /*   border: 2px dashed #008080; */
 }
 #canviiEssentials {
