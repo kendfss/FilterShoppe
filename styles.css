@@ -1,55 +1,69 @@
 html {
-/*   background-color: mediumseagreen; */
-/*   background-color: #008080; */
+  /* background-color: mediumseagreen; */
+  /* background-color: #008080; */
   background-color: #101010;
-  font-family: trebuchet ms;
-/*   color: #614b4b; */
+  background-color: wheat;
+  /* font-family: trebuchet ms; */
+  font-family: Consolas;
+  /* color: #614b4b; */
   color: #611b1b;
-/*   color: #008080; */
+  /* color: #008080; */
 }
-#pageHead, a {
+#pageTitle, a, nav {
   text-align: center;
   color: #611b1b;
-/*   color: #008080; */
+  /* color: #008080; */
 }
-nav {
-  text-align: center;
-}
+/* nav { */
+  /* text-align: center; */
+/* } */
 
 
 #canvii, #primaryOptionSelector, #controlPanel {
-/*   border: 5px dashed #005050;
-  border-radius: 8px */
+  /* border: 5px dashed #005050; */
+  /* border-radius: 8px; */
   text-align: center;
-/*   color: #611b1b; */
+  /* color: #611b1b; */
 }
+
 #originalImageCanvas, #editingImageCanvas {
-  /* z-index: -1; */
+  z-index: 0;
   position: relative;
   width: 200px;
-/*   background-color: wheat; */
-  background-color: #1b1b1b;
+  /* background-color: wheat; */
+  /* background-color: #1b1b1b; */
+  /* background-color: #101010; */
   /* border-radius: 9px; */
-  /* border: 2px dashed #611b1b; */
-/*   border: 2px dashed #005050; */
+  border: 1px dashed #611b1b;
+  /* border: 2px dashed #005050; */
   
-/*   border: 2px dashed #008080; */
+  /* border: 2px dashed #008080; */
 }
 #canviiEssentials {
   text-align: center;
 }
 #canviiStagingButtons {
-/*   height:45px; */
-/*   width: 30px; */
+  /* height:45px; */
+  /* width: 30px; */
   color: #611b1b;
-/*   color: #008080; */
+  /* align: center; */
+  /* color: #008080; */
 }
+#loadGif {
+  display: none;
+  padding-left: 49.5%;
+  /* padding-right: auto; */
+}
+/* #consoleElements { */
+  /* align: center; */
+/* } */
 
 select {
-/*   background: wheat; */
+  background: wheat;
 /*   background: #1b1b1b; */
-  background: #101010;
+  /* background: #101010; */
   border-radius: 25px;
+  border: 1px dashed #611b1b;
   text-align: center;
   color: #611b1b;
 /*   color: #614b4b; */
@@ -89,26 +103,31 @@ button:hover {
 .slider {
   height: 10px;
   border-radius: 5px;
-/*   background: wheat; */
-/*   background: wheat; */
-  background: #1b1b1b;
-  color: #008080;
+  /* background: wheat; */
+  /* background: wheat; */
+  /* background: #1b1b1b; */
+  border: 1px dashed #611b1b;
+  /* background: #101010; */
+  background: wheat;
+  color: #611b1b;
+  /* color: #008080; */
+  /* color: #008080; */
+  z-index: 1;
 }
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   border-radius: 50%; 
-/*   background: #614b4b; */
-  background: #1b1b1b;
-  color: #008080;
+  /* background: #1b1b1b; */
+  /* color: #008080; */
   cursor: pointer;
   border: none;
 }
 .slider::-moz-range-thumb {
   border-radius: 50%;
-/*   background: #614b4b; */
+  /* background: #614b4b; */
   background: #611b1b;
-  color: #008080;
+  /* color: #008080; */
   cursor: pointer;
   border: none;
 }

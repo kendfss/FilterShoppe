@@ -305,6 +305,7 @@ var __SimpleImageUtilities = (function () {
             loadFunc = function() {
                 simpleImage.__init(this);
                 console.log('loaded image: ' + simpleImage.id);
+                console.log(`dimensions = (${simpleImage.width}, ${simpleImage.height})`); 
             }
         }
         var img = new Image();

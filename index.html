@@ -3,6 +3,9 @@
 		<!-- choose pictures  -->
 			<!-- by file paths -->
 			<!-- at random -->
+	<!-- refactor -->
+		<!-- unify -->
+			<!-- zooming -->
 	
 
 <html>
@@ -12,37 +15,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FilterShoppe</title>
     <link rel="stylesheet" href="./styles.css">
+		<script id='simpleImageCode' type="application/javascript" src="./SimpleImage.js" charset="utf-8"></script>
+		<script id='FilterShoppeCode' type="application/javascript" src="./scripts.js" charset="utf-8"></script>
 	</head>
-	<div>
-		<body>
-			<!-- <a href='https://github.com/ksabalo'><h1 id='pageHead'>FilterShoppe</h1></a> -->
-			<h1 id='pageHead'>FilterShoppe</h1>
-			<p style='text-align:center;font-style:oblique'>A digital lomography workstation</p>
-			<div id='navDivider' class='separator' >
-				<nav id='navigationTabs'>
-					<a href='#1' onclick='togglePage("consoleElements","aboutElements")'>Main</a> |
-					<a href='#2' onclick='togglePage("aboutElements","consoleElements")'>About</a> |
-					<a href='https://github.com/kendfss' target="_blank">GitHub</a>
-				</nav>
-			</div>
+	<div id='pageHead'>
+		<h1 id='pageTitle'>FilterShoppe</h1>
+		<p style='text-align:center; font-style:oblique'>A digital lomography workstation</p>
+		<div id='navDivider' class='separator'>
+			<nav id='navigationTabs'>
+				<a href='#1' onclick='togglePage("consoleElements", "aboutElements")'>Main</a> |
+				<a href='#2' onclick='togglePage("aboutElements", "consoleElements")'>About</a> |
+				<a href='https://github.com/kendfss' target="_blank">GitHub</a>
+			</nav>
+		</div>
+	</div>
+	<div id='mainPage'>
+		<body id='mainBody'>
 			<div id='consoleElements'>
 				<div id='canviiEssentials' class='separator'>
-					<div id='canvii' class=''>
-						<br/>
-						<canvas id='originalImageCanvas'></canvas>
-						<canvas id='editingImageCanvas'></canvas>
+					<div id='canvii' class='container'>
+						<br>
+						<canvas class='imageCanvas' id='originalImageCanvas'></canvas>
+						<canvas class='imageCanvas' id='editingImageCanvas'></canvas>
 					</div>
 					<div id='canviiStagingButtons' class='button'>
-						<label for='originalImage' class='button' onchange='uploadOriginalImage()'>
-							<!-- <div> -->
-							Upload | 
+						<label for='originalImage' class='button'>
+							Upload
 							<input style='display:none;' id='originalImage' class='button' type='file' multiple='false' accept='image/*' value='Upload' onchange='uploadOriginalImage()'>
-							<!-- </div> -->
-						</label>
+						</label> | 
 						<label for='revertImageButton' class='button' onclick='revertImage()'>
-							Revert | 
-							<input style='display:none;' id='revertImageButton' class='button' type='button' value='Reset'><!--  onclick='revertImage()'> -->
-						</label>
+							Revert
+							<input style='display:none;' id='revertImageButton' class='button' type='button' value='Reset'>
+						</label> | 
 						<label for='cacheImageButton' class='button'>
 							Cache
 							<input style='display:none;' id='cacheImageButton' class='button' type='button' value='Transfer' onclick='cacheImage()'>
@@ -50,8 +54,8 @@
 					</div>
 					<div id='canviiZoomControls' class='controllers'>
 						<br/>
-						<input class="slider" id="originalZoomer" type="range" min=1 max=2 value="0" step="0.01" oninput="zoom('originalImageCanvas','originalZoomer')">
-						<input class="slider" id="editingZoomer" type="range" min=1 max=2 value="0" step="0.01" oninput="zoom('editingImageCanvas','editingZoomer')">
+						<input class="slider" id="originalZoomer" type="range" min=1 max=2.5 value="1" step="0.001" oninput="zoom('originalImageCanvas', 'originalZoomer')">
+						<input class="slider" id="editingZoomer" type="range" min=1 max=2.5 value="1" step="0.001" oninput="zoom('editingImageCanvas', 'editingZoomer')">
 						<br/>
 						<label for='resetZoomButton' class='button' onclick='resetZoom()'>
 							Reset Zoom
@@ -60,28 +64,33 @@
 						<br/>
 						<br/>
 					</div>
+					<div style='box-align: center;' class='container'>
+						<img id='loadGif' src='./loading.gif'>
+					</div>
 					<div id='canviiOrientationHandles'>
 						<select id='flipSelector' onchange='filterImageToggle()'>
 							<option class='selectorDefault' value='none'>Flip Axis</option>
 							<option id='horizontalFlip' onclick='flipHorizontal(editingImage)' value='h'>Horizontal Flip</option>
 							<option id='verticalFlip' onclick='flipVertical(editingImage)' value='v'>Vertical Flip</option>
 						</select>
-						<br/>
+						<br>
+						<br>
 						<label for='rotateImageButton' class='button' onclick='flipToggler()'>
 							Flip
 							<input style='display:none;' class='button' type='button' value='Apply Rotation' onclick='flipToggler()'>
-							<br/>
-							<br/>
+							<br>
+							<br>
+							<br>
 						</label>
 					</div>
 				</div>
 				<div id='controlPanel' class='wrapper'>
 					<select id="primaryOptionSelector" value='Editing Modes' onchange='primaryOptionToggler()'>
-						<option class='selectorDefault' value='none'>Edit Modes</option>
+						<option class='selectorDefault' value='none' onclick='primaryOptionToggler()'>Edit Modes</option>
 						<!-- <option class='primaryOption' value='border'>Add Border</option> -->
-						<option class='primaryOption' value='comb'>Combine</option>
+						<option class='primaryOption' value='comb' onclick='primaryOptionToggler()'>Combine</option>
 						<!-- <option class='primaryOption' value='text'>Apply Text</option> -->
-						<option class='primaryOption' value='filter'>Filter</option>
+						<option class='primaryOption' value='filter' onclick='primaryOptionToggler()'>Filter</option>
 					</select>
 					<br/>
 					<br/>
@@ -92,9 +101,9 @@
 						</div>
 						<div id='combinatorialControls' class='secondaryOptionPanel'>
 							<select id='combinatorialModeSelector' onchange='combinatorialToggler()'>
-								<option class='selectorDefault' value='none'>Combinatorial Modes</option>
-								<option class='combination' value='greenScreen'>Green Screen</option>
-								<option class='combination' value='blend'>Blend</option>
+								<option class='selectorDefault' value='none' onclick='combinatorialToggler()'>Combinatorial Modes</option>
+								<option class='combination' value='greenScreen' onclick='combinatorialToggler()'>Green Screen</option>
+								<option class='combination' value='blend' onclick='combinatorialToggler()'>Blend</option>
 							</select></br>
 							<div id='combinatorialModePanels' style='display:none;'>
 								<div id='greenScreenControls' class='combinatorialModePanel'>
@@ -112,21 +121,23 @@
 									</label><br/>Please note that the uploaded image will be treated as background for all blends<br/>Remember to choose a new background <i>before</i> changing the mode if you would like to use a different mode on a new image<br/>
 									<select id='blendModeSelector' onchange='toggleCustomBlend()'>
 										<option class='selectorDefault'>Blend Modes</option>
-										<option class='blendModes' onclick='applyPlusLighter(editingImage,blendingImage)'>Plus Lighter</option>
-										<option class='blendModes' onclick='applyPlusDarker(editingImage,blendingImage)'>Plus Darker</option>
-										<option class='blendModes' onclick='applyDifference(editingImage,blendingImage)'>Difference</option>
-										<option class='blendModes' onclick='applySubtract(editingImage,blendingImage)'>Subtract</option>
-										<option class='blendModes' onclick='applyDarkenOnly(editingImage,blendingImage)'>Darken Only</option>
-										<option class='blendModes' onclick='applyLightenOnly(editingImage,blendingImage)'>Lighten Only</option>
-										<option class='blendModes' onclick='applyW3CSoftlight(editingImage,blendingImage)'>Softlight (W3C)</option>
-										<option class='blendModes' onclick='applyIllusionsHUSoftlight(editingImage,blendingImage)'>Softlight (IllusionsHU)</option>
-										<option class='blendModes' onclick='applyPhotoShopSoftlight(editingImage,blendingImage)'>Softlight (Photoshop)</option>
-										<option class='blendModes' onclick='applyPegtopSoftlight(editingImage,blendingImage)'>Softlight (Pegtop)</option>
-										<option class='blendModes' onclick='applyOverlay(editingImage,blendingImage)'>Overlay</option>
-										<option class='blendModes' onclick='applyMultiply(editingImage,blendingImage)'>Multiply</option>
-										<option class='blendModes' onclick='applyDivide(editingImage,blendingImage)'>Divide</option>
-										<option class='blendModes' onclick='applyScreen(editingImage,blendingImage)'>Screen</option>
-										<option class='blendModes' onclick='applyPegtopHappyAccident1(editingImage,blendingImage)'>Happy Accident #1</option>
+										<option class='blendModes' onclick='applyPlusLighter(editingImage, blendingImage)'>Plus Lighter</option>
+										<option class='blendModes' onclick='applyPlusDarker(editingImage, blendingImage)'>Plus Darker</option>
+										<!-- <option class='blendModes' onclick='applyMinusDarker(editingImage, blendingImage)'>Minus Lighter</option> -->
+										<!-- <option class='blendModes' onclick='applyMinusDarker(editingImage, blendingImage)'>Minus Darker</option> -->
+										<option class='blendModes' onclick='applyDifference(editingImage, blendingImage)'>Difference</option>
+										<option class='blendModes' onclick='applySubtract(editingImage, blendingImage)'>Subtract</option>
+										<option class='blendModes' onclick='applyDarkenOnly(editingImage, blendingImage)'>Darken Only</option>
+										<option class='blendModes' onclick='applyLightenOnly(editingImage, blendingImage)'>Lighten Only</option>
+										<option class='blendModes' onclick='applyW3CSoftlight(editingImage, blendingImage)'>Softlight (W3C)</option>
+										<option class='blendModes' onclick='applyIllusionsHUSoftlight(editingImage, blendingImage)'>Softlight (IllusionsHU)</option>
+										<option class='blendModes' onclick='applyPhotoShopSoftlight(editingImage, blendingImage)'>Softlight (Photoshop)</option>
+										<option class='blendModes' onclick='applyPegtopSoftlight(editingImage, blendingImage)'>Softlight (Pegtop)</option>
+										<option class='blendModes' onclick='applyOverlay(editingImage, blendingImage)'>Overlay</option>
+										<option class='blendModes' onclick='applyMultiply(editingImage, blendingImage)'>Multiply</option>
+										<option class='blendModes' onclick='applyDivide(editingImage, blendingImage)'>Divide</option>
+										<option class='blendModes' onclick='applyScreen(editingImage, blendingImage)'>Screen</option>
+										<option class='blendModes' onclick='applyPegtopHappyAccident1(editingImage, blendingImage)'>Happy Accident #1</option>
 										<option class='blendModes' value='custom'>Custom</option>
 									</select>
 									<!-- <div id='customFilterPanel' class='customPanel' style='display:none;'></div> -->
@@ -138,7 +149,7 @@
 										<input id='customBlendNameBox' placeholder='nameOfYourMainFunction'></br>
 										<!-- <button id='customBlendFunctionCompile' onclick='compileCustomEffect()'>Compile</button> -->
 										<button id='customBlendFunctionTrigger' onclick='executeCustomBlend()'>Execute</button>
-										<input type='button' id='customBlendExampleButton' value='Hide Example' onclick='exampleToggle("customBlendExampleButton","customBlendExample")'></br>
+										<input type='button' id='customBlendExampleButton' value='Hide Example' onclick='exampleToggle("customBlendExampleButton", "customBlendExample")'></br>
 										<!-- <button id='customBlendTestingButton'><a href='http://www.dukelearntoprogram.com/course1/example/index.php' style='text-decoration:none;'>Testing Station</a></button></br> -->
 										<textarea readonly id='customBlendExample' style='height:150px;width:800px;background-color:#008080;' wrap='off'>
 		// Example
@@ -164,7 +175,8 @@
 			var canny = document.getElementById("editingImageCanvas");
 			other.drawTo(canny);
 		}
-										</textarea></br>
+										</textarea>
+										<br>
 										<textarea id='customBlendText' style='height:350px;width:800px;' wrap='off'></textarea>
 										<script id='customFilterTarget'></script>
 									</div>
@@ -185,7 +197,7 @@
 							<input id="textColour" type="color" value="#111159" onchange="updateTextColour()">
 							<input class='slider' id='fontSize' type='range' value='10' min='7' max='50' step='.5' onchange='updateTextSize()'>
 							<!-- <input id='textBox' spellcheck='true' type='message-box' value='Enter your text here' onchange='updateTextContent()'> -->
-							<br/>
+							<br>
 							<textarea contenteditable='true' id='textBox' spellcheck='true' type='message-box' value='' onchange='updateTextContent()'>Enter your text here</textarea>
 						</div>
 						<div id='filterControls' class='secondaryOptionPanel'>
@@ -215,11 +227,11 @@
 								<option class='filterOption' value='custom'>Custom</option>
 							</select>
 							<div id='customFilterPanel' class='customPanel' style='display:none;'>
-								<input id='customFilterNameBox' placeholder='nameOfYourMainFunction'></br>
-								<!-- <button id='customFilterFunctionCompile' onclick='compileCustomEffect()'>Compile</button> -->
+								<input id='customFilterNameBox' placeholder='nameOfYourMainFunction'>
+								<br>
 								<button id='customFilterFunctionTrigger' onclick='executeCustomFilter()'>Execute</button>
-								<input type='button' id='customFilterExampleButton' value='Hide Example' onclick='exampleToggle("customFilterExampleButton","customFilterExample")'></br>
-								<!-- <a id='customFilterTestingButton' href='http://www.dukelearntoprogram.com/course1/example/index.php' style='text-decoration:none;'>Testing Station</a></br> -->
+								<input type='button' id='customFilterExampleButton' value='Hide Example' onclick='exampleToggle("customFilterExampleButton", "customFilterExample")'></br>
+								<a id='customFilterTestingButton' href='http://www.dukelearntoprogram.com/course1/example/index.php' style='text-decoration:none;'>Testing Station</a></br>
 								<textarea readonly id='customFilterExample' style='height:150px;width:800px;background-color:#008080;' wrap='off'>
 		// Example
 		// Remember to enter the name of your function otherwise we won't know what to execute!
@@ -238,31 +250,39 @@
 			var canny = document.getElementById("editingImageCanvas");
 			img.drawTo(canny);
 		}
-								</textarea></br>
+								</textarea>
+								<br>
 								<textarea id='customFilterText' style='height:350px;width:800px;' wrap='off'></textarea>
 								<script id='customFilterTarget'></script>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div id='footer' class='separator' >
-						<p id='saveNote'>
-							right-click the image on the right if you'd like to download your work.
-							<br>Use the sliders to zoom.
-						<br><i>Reverting</i> enables you to go back to the last cached version.<br><i>Caching</i> enables you to log your progress and return to earlier steps in the process if need be.</p>
-				</div>
 			</div>
-
 		</body>
+		<footer>
+			<div id='footer' class='separator' >
+				<p id='saveNote'>
+					right-click the image on the right if you'd like to download your work.<br>
+					Use the sliders to zoom.<br>
+					<i>Caching</i> enables you to save your progress and return to an earlier step in the process if need be.<br>
+					<i>Reverting</i> enables you to go back to the last cached version.<br><br>
+					<small>
+						Note: All processing will be done by your web browser. This application will not store any of your images or data. <br><br>
+					</small>
+				</p>
+			</div>
+		</footer>
 	</div>
+		
 	<div id='aboutElements' style='display:none;'>
-		<body>
-			<img id='aboutImage' src=''>
+		<body id='aboutBody'>
+			<!-- <img id='aboutImage' src=''> -->
 			<p id='aboutText'>
-				Note: This application will not store any of your images or data. All processing will be done by your web browser.</br></br>
+				</br></br></br></br></br></br>
 				
 				
-				This app was arranged by Kenneth Sabalo.<br>
+				This app was arranged by Kenneth Elisandro.<br>
 				Though the course was never completed, the app itself is an extension of some assignments from Duke University's Java Team's course on the foundations of web development with JavaScript, CSS, and html, and uses their SimpleImage Library extensively.<br>
 				The following links direct to pages whose information was used in the development process:</br></br>
 				(* For codepen users: control/command-click on the links below)
@@ -271,16 +291,13 @@
 				<a style='text-align:center;' href='http://www.dukelearntoprogram.com/course1'>Course Resources</a></br>
 				<a style='text-align:center;' href='https://en.wikipedia.org/wiki/Blend_modes'>Blend Modes</a></br>
 				<a id='customFilterTestingButton' href='http://www.dukelearntoprogram.com/course1/example/index.php'>Testing Station</a>
-				<!--style='text-decoration:none;' --> 
-				<!-- <a style='text-align:center;' href='https://processing.org/tutorials/pixels/'>Processing.org</a><br /> -->
-				<!-- <a style='text-align:center;' href='https://en.wikipedia.org/wiki/Kernel_(image_processing)'>Kernels.wiki</a><br /> -->
-				<!-- <a style='text-align:center;' href='https://www.dyclassroom.com/image-processing-project/how-to-convert-a-color-image-into-sepia-image'>DYClassroom</a> -->
-			</div><p>Thanks for stopping by. Hope your time was well spent!</p>
+				<a style='text-align:center;' href='https://processing.org/tutorials/pixels/'>Processing.org</a><br />
+				<a style='text-align:center;' href='https://en.wikipedia.org/wiki/Kernel_(image_processing)'>Kernels.wiki</a><br />
+				<a style='text-align:center;' href='https://www.dyclassroom.com/image-processing-project/how-to-convert-a-color-image-into-sepia-image'>DYClassroom</a>
+			</div>
 		</body>
+		<footer id='aboutFooter'>
+			<p>Thanks for stopping by. Hope your time was well spent!</p>
+		</footer>
 	</div>
 </html>
-<script id='simpleImageCode'>
-
-</script>
-<script id='simpleImageCode' type="application/javascript" src="./SimpleImage.js" charset="utf-8"></script>
-<script id='FilterShoppeCode' type="application/javascript" src="./scripts.js" charset="utf-8"></script>

@@ -5,7 +5,16 @@ var criticalGreen = null;
 var greenScreenBackground = null;
 var blendingImage = null;
 
-
+function toggleLoadGif() {
+  var elem = document.getElementById('loadGif')
+  // var value = (elem.style.display == "none") ? "none" : "block";
+  if (elem.style.display == 'none') {
+    var value = 'block';
+  } else if (elem.style.display == 'block') {
+    var value = 'none'
+  }
+  elem.style.display = value;
+}
 function togglePage(shown, hidden) {
 	document.getElementById(shown).style.display = 'block';
 	document.getElementById(hidden).style.display = 'none';
@@ -59,8 +68,8 @@ function toggleZindex(frontID) {
   var backID = (frontID === ogic) ? "editingImageCanvas" : ogic;
   frontCan = document.getElementById(frontID);
   backCan = document.getElementById(backID);
-  frontCan.style.zIndex = 1;
-  backCan.style.zIndex = 0;
+  frontCan.style.zIndex = 0;
+  backCan.style.zIndex = -1;
 }
 function zoom(canID, inputID) {
   toggleZindex(canID);
@@ -80,15 +89,20 @@ function resetZoom() {
 }
 
 
-
+function removeBorders() {
+  for (var e of document.getElementsByClassName('imageCanvas')) {
+    e.style.border = "0px";
+  }
+}
 function uploadOriginalImage() {
 	var can = document.getElementById("originalImageCanvas");
 	file = document.getElementById("originalImage");
 	originalImage = new SimpleImage(file);
-	originalImage.drawTo(can);
-	if (editingImage === null) revertImage();
+  originalImage.drawTo(can);
+	if (editingImage === null) {revertImage()};
+  removeBorders();
 }
-function resize(img,target) {
+function resize(img, target) {
 	tw = target.getWidth()
 	iw = img.getWidth() 
 }
@@ -97,19 +111,22 @@ function uploadGreenScreenBackground() {
 	greenScreenBackground = new SimpleImage(file);
 	greenScreenBackground.setSize(editingImage.getWidth(), editingImage.getHeight());
 	alert(`dimensions(backgroundImage) = ${dimensions(greenScreenBackground)}`)
-	applyGreenScreen(editingImage,greenScreenBackground);
+	applyGreenScreen(editingImage, greenScreenBackground);
 }
 function uploadBlendLayer() {
 	file = document.getElementById("blendUpload");
 	blendingImage = new SimpleImage(file);
 }
 function revertImage() {
+  
 	var eCan = document.getElementById('editingImageCanvas');
 	editingImage = originalImage;
 	editingImage.drawTo(eCan);
+  
 }
 function cacheImage() {
 	var oCan = document.getElementById('originalImageCanvas');
+  
 	originalImage = new SimpleImage(editingImage.getWidth(), editingImage.getHeight());
 	for (var px of originalImage.values()) {
 		var x = px.getX();
@@ -118,6 +135,7 @@ function cacheImage() {
 		px.setAllFrom(epx);
 	}
 	originalImage.drawTo(oCan);
+  
 }
 function swapPixels(px, opx) {
   var r = px.getRed();
@@ -406,6 +424,7 @@ function applyNegative(img) {
     px.setGreen(255 - g);
     px.setBlue(255 - b);
   }
+	
 	var canny = document.getElementById("editingImageCanvas");
 	img.drawTo(canny);
 }
