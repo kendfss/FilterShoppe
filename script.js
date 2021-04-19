@@ -5,6 +5,23 @@ var criticalGreen = null;
 var greenScreenBackground = null;
 var blendingImage = null;
 
+
+function setHoverEvents() {
+  document.getElementById('editingImageCanvas').onmouseover = (event) => {
+    document.getElementById('editingImageCanvas').style.display = 'none';
+    document.getElementById('originalImageCanvas').style.display = 'inline';
+  }
+  document.getElementById('originalImageCanvas').onmouseout = (event) => {
+    document.getElementById('editingImageCanvas').style.display = 'inline';
+    document.getElementById('originalImageCanvas').style.display = 'none';
+  }
+}
+
+setHoverEvents();
+
+function getId(id) {
+  return document.getElementById(id);
+}
 function quantize(rgbval) {
   if (rgbval > 255) {
     rgbval = 255;
@@ -71,6 +88,14 @@ function setBorderColour() {
 	can1.style.backgroundColor = clr.value;
 }
 
+function swapCanvii() {
+  let tmp = new SimpleImage(originalImage.getWidth(), originalImage.getHeight());
+  originalImage = editingImage;
+  editingImage = tmp;
+  originalImage.drawTo(getId('originalImageCanvas'));
+  editingImage.drawTo(getId('editingImageCanvas'));
+}
+
 function toggleZindex(frontID) {
   var ogic = "originalImageCanvas";
   var backID = (frontID === ogic) ? "editingImageCanvas" : ogic;
@@ -80,20 +105,21 @@ function toggleZindex(frontID) {
   backCan.style.zIndex = -1;
 }
 function zoom(canID, inputID) {
-  toggleZindex(canID);
+  // toggleZindex(canID);
 	var val = document.getElementById(inputID).value;
 	var can = document.getElementById(canID);
 	can.style.scale = val;
 }
 function resetZoom() {
-	var oCan = document.getElementById('originalImageCanvas');
-	var eCan = document.getElementById('editingImageCanvas');
-	var oVal = document.getElementById('originalZoomer').value;
-	var eVal = document.getElementById('editingZoomer').value;
-	oCan.style.scale = 1;
-	eCan.style.scale = 1;
-	document.getElementById('originalZoomer').value = 1;
+	// var oCan = document.getElementById('originalImageCanvas');
+	// var eCan = document.getElementById('editingImageCanvas');
+	// var eVal = document.getElementById('editingZoomer').value;
+	// oCan.style.scale = 1;
+	// eCan.style.scale = 1;
+	// document.getElementById('editingZoomer').value = 1;
 	document.getElementById('editingZoomer').value = 1;
+  zoom('originalImageCanvas', 'editingZoomer')
+  zoom('editingImageCanvas', 'editingZoomer')
 }
 
 
@@ -118,7 +144,7 @@ function uploadGreenScreenBackground() {
 	file = document.getElementById("greenScreenBackgroundImage");
 	greenScreenBackground = new SimpleImage(file);
 	greenScreenBackground.setSize(editingImage.getWidth(), editingImage.getHeight());
-	alert(`dimensions(backgroundImage) = ${dimensions(greenScreenBackground)}`)
+	alert(`dimensions(backgroundImage) = ${dimensions(greenScreenBackground)}`);
 	applyGreenScreen(editingImage, greenScreenBackground);
 }
 function uploadBlendLayer() {
@@ -128,8 +154,11 @@ function uploadBlendLayer() {
 function revertImage() {
   
 	var eCan = document.getElementById('editingImageCanvas');
+  originalImage.drawTo(eCan);
+  originalImage.drawTo(getId('originalImageCanvas'));
 	editingImage = originalImage;
-	editingImage.drawTo(eCan);
+	// editingCanvas.drawTo(eCan);
+	
   
 }
 function commitImage() {
@@ -474,67 +503,104 @@ function getPixelNearby(image, x, y, diameter) {
     return image.getPixel(nx, ny);
 }
 function applyBlur(img) {
+  console.log('blurring');
   var X = img.getWidth();
   var Y = img.getHeight();
-  var output = new SimpleImage(X, Y);
+  let output = new SimpleImage(X, Y);
   for (var px of img.values()) {
     var x = px.getX();
     var y = px.getY();
     if (Math.random() > 0.5) {
       var other = getPixelNearby(img, x, y, 10);
       output.setPixel(x, y, other);
+      // img.setPixel(x, y, other);
     } else {
       output.setPixel(x, y, px);
+      // img.setPixel(x, y, px);
     }
   }
+  editingImage = output;
   var canny = document.getElementById("editingImageCanvas");
-	output.drawTo(canny);
+	img.drawTo(canny);
+  console.log('blurred');
 }
 
-function applyTricolor(inpt) {
-  for (var pixel of inpt.values()) {
-    if (pixel.getX() < (inpt.getWidth() / 3)){
-      pixel.setBlue(pixel.getBlue() - 120);
+
+function applyTricolor(img) {
+  var X = img.getWidth();
+  var Y = img.getHeight();
+  let output = new SimpleImage(X, Y);
+  for (var px of output.values()) {
+    let x = px.getX();
+    let y = px.getY();
+    let ipx = img.getPixel(x, y);
+    if (px.getX() < (img.getWidth() / 3)){
+      px.setBlue(ipx.getBlue() - 120);
     }
-    else if (pixel.getX() <= 2 * (inpt.getWidth() / 3)) {
-      pixel.setGreen(pixel.getGreen() - 120);
+    else if (px.getX() <= 2 * (img.getWidth() / 3)) {
+      px.setGreen(ipx.getGreen() - 120);
     }
-    else if (pixel.getX() >= 2 * (inpt.getWidth() / 3)) {
-      pixel.setRed(pixel.getRed() - 120);
-      pixel.setGreen(pixel.getGreen() - 120);
+    else if (px.getX() >= 2 * (img.getWidth() / 3)) {
+      px.setRed(ipx.getRed() - 120);
+      px.setGreen(ipx.getGreen() - 120);
     }
   }
+  editingImage = output;
 	var canny = document.getElementById("editingImageCanvas");
 	inpt.drawTo(canny);
 }
 
 function applyRGInversion(img) {
-  for (var px of img.values()) {
-    var nuGreen = px.getRed();
-    var nuRed = px.getGreen();
+  var X = img.getWidth();
+  var Y = img.getHeight();
+  let output = new SimpleImage(X, Y);
+  for (var px of output.values()) {
+    let x = px.getX();
+    let y = px.getY();
+    let ipx = img.getPixel(x, y);
+    var nuGreen = ipx.getRed();
+    var nuRed = ipx.getGreen();
     px.setGreen(nuGreen);
     px.setRed(nuRed);
+    px.setBlue(ipx.getBlue());
   }
+  editingImage = output
 	var canny = document.getElementById("editingImageCanvas");
 	img.drawTo(canny);
 }
 function applyRBInversion(img) {
-  for (var px of img.values()) {
+  var X = img.getWidth();
+  var Y = img.getHeight();
+  let output = new SimpleImage(X, Y);
+  for (var px of output.values()) {
+    let x = px.getX();
+    let y = px.getY();
+    let ipx = img.getPixel(x, y);
     var nuBlue = px.getRed();
     var nuRed = px.getBlue();
     px.setBlue(nuBlue);
     px.setRed(nuRed);
+    px.setGreen(ipx.getGreen());
   }
+  editingImage = output;
 	var canny = document.getElementById("editingImageCanvas");
 	img.drawTo(canny);
 }
 function applyGBInversion(img) {
-  for (var px of img.values()) {
+  var X = img.getWidth();
+  var Y = img.getHeight();
+  let output = new SimpleImage(X, Y);
+  for (var px of output.values()) {
+    let x = px.getX();
+    let y = px.getY();
+    let ipx = img.getPixel(x, y);
     var nuBlue = px.getGreen();
     var nuGreen = px.getBlue();
     px.setBlue(nuBlue);
     px.setGreen(nuGreen);
+    px.setRed(ipx.getRed());
   }
+  editingImage = output;
 	var canny = document.getElementById("editingImageCanvas");
 	img.drawTo(canny);
 }
@@ -793,8 +859,8 @@ function applyForwardDistribute(img) {
   var X = img.getWidth();
   var Y = img.getHeight();
   for (var i = 0; i < vals.length; i++) {
-    var j = Math.floor(Math.random() * vals.length)
-    var px = vals[j]
+    var j = Math.floor(Math.random() * vals.length);
+    var px = vals[j];
     var x = px.getX();
     var y = px.getY();
     var ox = Math.abs(x + (X - x) * Math.random());
@@ -807,7 +873,7 @@ function applyForwardDistribute(img) {
 }
 function applyBackwardDistribute(img) {
   var vals = img.values();
-  var times = Math.floor(Math.random()*vals.length)
+  var times = Math.floor(Math.random() * (vals.length + 1));
   var X = img.getWidth();
   var Y = img.getHeight();
   for (var i = 0; i < times; i++) {

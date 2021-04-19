@@ -14,13 +14,16 @@ html {
   text-align: center;
 }
 
-#originalImageCanvas, #editingImageCanvas {
+/* #originalImageCanvas, #editingImageCanvas { */
+.imageCanvas {
   z-index: 0;
   position: relative;
   width: 200px;
   border: 1px dashed #611b1b;
-  
 }
+/* #originalImageCanvas { */
+  /* display: none; */
+/* } */
 #canviiEssentials {
   text-align: center;
 }

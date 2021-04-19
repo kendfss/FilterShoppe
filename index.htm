@@ -1,12 +1,3 @@
-<!-- TODO -->
-	<!-- make it possible to  -->
-		<!-- choose pictures  -->
-			<!-- by file paths -->
-			<!-- at random -->
-	<!-- refactor -->
-		<!-- unify -->
-			<!-- zooming -->
-	
 <!DOCTYPE html>
 <html>
 	<head>
@@ -15,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <title>FilterShoppe</title> -->
     <title>+gamma+</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./style.css">
 		<script id='simpleImageCode' type="application/javascript" src="./SimpleImage.js" charset="utf-8"></script>
-		<script id='FilterShoppeCode' type="application/javascript" src="./scripts.js" charset="utf-8"></script>
 	</head>
 	<div id='pageHead'>
 		<!-- <h1 id='pageTitle'>FilterShoppe</h1> -->
@@ -37,8 +27,11 @@
 				<div id='canviiEssentials' class='separator'>
 					<div id='canvii' class='container'>
 						<br>
-						<canvas class='imageCanvas' id='originalImageCanvas'></canvas>
+						<!-- <canvas class='imageCanvas' id='originalImageCanvas'></canvas> -->
+						<canvas class='imageCanvas' id='originalImageCanvas' style='display: none;'></canvas>
+						<!-- <canvas class='imageCanvas' id='originalImageCanvas'></canvas> -->
 						<canvas class='imageCanvas' id='editingImageCanvas'></canvas>
+						<canvas class='imageCanvas' id='swappingImageCanvas' style='display: none;'></canvas>
 					</div>
 					<div id='canviiStagingButtons' class='button'>
 						<label for='originalImage' class='button'>
@@ -51,13 +44,18 @@
 						</label> | 
 						<label for='cacheImageButton' class='button'>
 							Commit
-							<input style='display:none;' id='cacheImageButton' class='button' type='button' value='Transfer' onclick='commitImage()'>
+							<input style='display:none;' id='cacheImageButton' class='button' type='button' value='Commit' onclick='commitImage()'>
+						</label> |
+						<label for='cacheImageButton' class='button'>
+							Swap
+							<input style='display:none;' id='cacheImageButton' class='button' type='button' value='Swap' onclick='swapCanvii()'>
 						</label>
 					</div>
 					<div id='canviiZoomControls' class='controllers'>
 						<br/>
-						<input class="slider" id="originalZoomer" type="range" min=1 max=2.5 value="1" step="0.001" oninput="zoom('originalImageCanvas', 'originalZoomer')">
-						<input class="slider" id="editingZoomer" type="range" min=1 max=2.5 value="1" step="0.001" oninput="zoom('editingImageCanvas', 'editingZoomer')">
+						<!-- <input class="slider" id="originalZoomer" type="range" min=1 max=2.5 value="1" step="0.001" oninput="zoom('originalImageCanvas', 'originalZoomer')"> -->
+						<!-- <input class="slider" id="editingZoomer" type="range" min=1 max=2.5 value="1" step="0.001" oninput="zoom('editingImageCanvas', 'editingZoomer')"> -->
+						<input class="slider" id="editingZoomer" type="range" min=1 max=2.5 value="1" step="0.001" oninput="zoom('editingImageCanvas', 'editingZoomer'); zoom('originalImageCanvas', 'editingZoomer')">
 						<br/>
 						<label for='resetZoomButton' class='button' onclick='resetZoom()'>
 							Reset Zoom
@@ -65,8 +63,11 @@
 						</label>
 						<br/>
 						<br/>
+						<br/>
 					</div>
-					<div style='box-align: center;' class='container'>
+					<!-- <div style='box-align: center;' class='container'> -->
+					<!-- <div style='align: center;' class='container'> -->
+					<div style='text-align: center;' class='container'>
 						<img id='loadGif' src='./loading.gif'>
 					</div>
 					<div id='canviiOrientationHandles'>
@@ -280,8 +281,10 @@
 		<footer>
 			<div id='footer' class='separator' >
 				<p id='saveNote'>
-					right-click the image on the right if you'd like to download your work.<br>
-					Use the sliders to zoom.<br>
+					The swap button allows you to change the fore/back-ground for combinatorial modes<br>
+					Hover over the canvas to see the cached state. Commit to update it.<br>
+					Right-click the image on the right if you'd like to download your work.<br>
+					Use the slider to zoom.<br>
 					<i>Caching</i> enables you to save your progress and return to an earlier step in the process if need be.<br>
 					<i>Reverting</i> enables you to go back to the last cached version.<br><br>
 					<small>
@@ -314,6 +317,7 @@
 			</div>
 		</body>
 		<footer id='aboutFooter'>
+			<script id='filterShoppeCode' type="application/javascript" src="./script.js" charset="utf-8"></script>
 			<p>Thanks for stopping by. Hope your time was well spent!</p>
 		</footer>
 	</div>

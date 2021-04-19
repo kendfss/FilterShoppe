@@ -14,9 +14,3 @@ Combine >> Blend >> Custom
 Test your custom scripts [here](http://www.dukelearntoprogram.com/course1/example/index.php).
 
 [Here](http://www.dukelearntoprogram.com/course1/files.php) are some examples of scripts written using the SimpleImage and SimplePixel packages.
-
-ToDo:
-  
-  Borders
-    
-  There are some blending algorithms I ommitted because I wasn't sure what to call them, but once I find out I'll update the masters

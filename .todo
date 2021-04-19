@@ -1,6 +1,18 @@
-Show cache on hover
-Swap button
-Consolidate Darken/Lighten-only versions using tick boxes
-    Add focus mode to allow selection of only single colour stream (rgb)
-Consolidate/add Plus/minus-lighter/darker
-Operation cache
+features
+    choose pictures
+        by file paths
+        at random
+    Swap button
+    Borders
+
+refactor
+    Consolidate Darken/Lighten-only versions using tick boxes
+        Add focus mode to allow selection of only single colour stream (rgb)
+    Consolidate/add/augment Plus/minus-lighter/darker
+    Operation cache
+    Filters in which no intermediary image is used are not responsive to reversion
+
+Done
+    show cache on hover
+    unify: zooming
+    fix non-commit on blurs
