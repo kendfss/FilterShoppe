@@ -5,13 +5,21 @@ var criticalGreen = null;
 var greenScreenBackground = null;
 var blendingImage = null;
 
+function quantize(rgbval) {
+  if (rgbval > 255) {
+    rgbval = 255;
+  } else if (rgbval < 0) {
+    rgbval = 0;
+  }
+  return parseInt(rgbval);
+}
+
 function toggleLoadGif() {
-  var elem = document.getElementById('loadGif')
-  // var value = (elem.style.display == "none") ? "none" : "block";
+  var elem = document.getElementById('loadGif');
   if (elem.style.display == 'none') {
     var value = 'block';
   } else if (elem.style.display == 'block') {
-    var value = 'none'
+    var value = 'none';
   }
   elem.style.display = value;
 }
@@ -33,7 +41,7 @@ function isGreen(px) {
 	} else {
 		if (px.getGreen() < criticalGreen) return false;
 	}
-  return true
+  return true;
 }
 function dimensions(img) {
 	return [img.getWidth(), img.getHeight()]
@@ -84,8 +92,8 @@ function resetZoom() {
 	var eVal = document.getElementById('editingZoomer').value;
 	oCan.style.scale = 1;
 	eCan.style.scale = 1;
-	eVal = 1;
-	oVal = 1;
+	document.getElementById('originalZoomer').value = 1;
+	document.getElementById('editingZoomer').value = 1;
 }
 
 
@@ -124,7 +132,7 @@ function revertImage() {
 	editingImage.drawTo(eCan);
   
 }
-function cacheImage() {
+function commitImage() {
 	var oCan = document.getElementById('originalImageCanvas');
   
 	originalImage = new SimpleImage(editingImage.getWidth(), editingImage.getHeight());
@@ -555,7 +563,7 @@ function applyHorizontalRainbow(image) {
 				pixel.setBlue(0);
 			} else {
 				pixel.setRed(255);
-				pixel.setGreen(1.2 * avg-51);
+				pixel.setGreen(1.2 * avg - 51);
 				pixel.setBlue(2 * avg - 255);
 			}
 		} else if (y < height * 3 / 7) {
@@ -576,7 +584,7 @@ function applyHorizontalRainbow(image) {
 				pixel.setGreen(2 * avg);
 				pixel.setBlue(0);
 			} else {
-				pixel.setRed(2 * avg-255);
+				pixel.setRed(2 * avg - 255);
 				pixel.setGreen(255);
 				pixel.setBlue(2 * avg - 255);
 			}
@@ -587,7 +595,7 @@ function applyHorizontalRainbow(image) {
 				pixel.setGreen(0);
 				pixel.setBlue(2 * avg);
 			} else {
-				pixel.setRed(2 * avg-255);
+				pixel.setRed(2 * avg - 255);
 				pixel.setGreen(2 * avg - 255);
 				pixel.setBlue(255);
 			}
@@ -598,7 +606,7 @@ function applyHorizontalRainbow(image) {
 				pixel.setGreen(0);
 				pixel.setBlue(2 * avg);
 			} else {
-				pixel.setRed(1.2 * avg-51);
+				pixel.setRed(1.2 * avg - 51);
 				pixel.setGreen(2 * avg - 255);
 				pixel.setBlue(255);
 			}
@@ -609,7 +617,7 @@ function applyHorizontalRainbow(image) {
 				pixel.setGreen(0);
 				pixel.setBlue(1.6 * avg);
 			} else {
-				pixel.setRed(0.4*avg+153);
+				pixel.setRed(0.4*avg + 153);
 				pixel.setGreen(2 * avg - 255);
 				pixel.setBlue(0.4 * avg+153);
 			}
@@ -1007,6 +1015,219 @@ function applyLightenOnly(fore, back) {
 	other.drawTo(canny);
 
 }
+
+function applyDarkenRedOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setRed(Math.min(px.getRed(), bpx.getRed()));
+    opx.setGreen(px.getGreen());
+    opx.setBlue(px.getBlue());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+function applyLightenRedOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setRed(Math.max(px.getRed(), bpx.getRed()));
+    opx.setGreen(px.getGreen());
+    opx.setBlue(px.getBlue());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+
+function applyDarkenGreenOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setGreen(Math.min(px.getGreen(), bpx.getGreen()));
+    opx.setRed(px.getRed());
+    opx.setBlue(px.getBlue());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+function applyLightenGreenOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setGreen(Math.max(px.getGreen(), bpx.getGreen()));
+    opx.setRed(px.getRed());
+    opx.setBlue(px.getBlue());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+
+function applyDarkenBlueOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setBlue(Math.min(px.getBlue(), bpx.getBlue()));
+    opx.setRed(px.getRed());
+    opx.setGreen(px.getGreen());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+function applyLightenBlueOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setBlue(Math.max(px.getBlue(), bpx.getBlue()));
+    opx.setRed(px.getRed());
+    opx.setGreen(px.getGreen());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+
+function applyDarkenRedGreenOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setRed(Math.min(px.getRed(), bpx.getRed()));
+    opx.setGreen(Math.min(px.getGreen(), bpx.getGreen()));
+    opx.setBlue(px.getBlue());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+function applyLightenRedGreenOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setRed(Math.max(px.getRed(), bpx.getRed()));
+    opx.setGreen(Math.max(px.getGreen(), bpx.getGreen()));
+    opx.setBlue(px.getBlue());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+
+function applyDarkenRedBlueOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setRed(Math.min(px.getRed(), bpx.getRed()));
+    opx.setBlue(Math.min(px.getBlue(), bpx.getBlue()));
+    opx.setGreen(px.getGreen());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+function applyLightenRedBlueOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setRed(Math.max(px.getRed(), bpx.getRed()));
+    opx.setBlue(Math.max(px.getBlue(), bpx.getBlue()));
+    opx.setGreen(px.getGreen());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+
+function applyDarkenGreenBlueOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setBlue(Math.min(px.getBlue(), bpx.getBlue()));
+    opx.setGreen(Math.min(px.getGreen(), bpx.getGreen()));
+    opx.setRed(px.getRed());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+function applyLightenGreenBlueOnly(fore, back) {
+  back.setSize(dimensions(fore)[0], dimensions(fore)[1]);
+  var other = new SimpleImage(dimensions(fore)[0], dimensions(fore)[1]);
+  for (var px of fore.values()) {
+    x = px.getX();
+    y = px.getY();
+    bpx = back.getPixel(x, y);
+    opx = other.getPixel(x, y);
+    opx.setBlue(Math.max(px.getBlue(), bpx.getBlue()));
+    opx.setGreen(Math.max(px.getGreen(), bpx.getGreen()));
+    opx.setRed(px.getRed());
+  }
+	editingImage = other;
+  var canny = document.getElementById("editingImageCanvas");
+	other.drawTo(canny);
+
+}
+
+
+
 function gw3c(rgb) {
   if (rgb <= 0.25) return (rgb*(4 + (rgb * (16 * rgb - 12))));
   if (rgb > 0.25) return (rgb**(1 / 2));

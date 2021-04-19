@@ -1,83 +1,50 @@
 html {
-  /* background-color: mediumseagreen; */
-  /* background-color: #008080; */
   background-color: #101010;
   background-color: wheat;
-  /* font-family: trebuchet ms; */
   font-family: Consolas;
-  /* color: #614b4b; */
   color: #611b1b;
-  /* color: #008080; */
 }
 #pageTitle, a, nav {
   text-align: center;
   color: #611b1b;
-  /* color: #008080; */
 }
-/* nav { */
-  /* text-align: center; */
-/* } */
 
 
 #canvii, #primaryOptionSelector, #controlPanel {
-  /* border: 5px dashed #005050; */
-  /* border-radius: 8px; */
   text-align: center;
-  /* color: #611b1b; */
 }
 
 #originalImageCanvas, #editingImageCanvas {
   z-index: 0;
   position: relative;
   width: 200px;
-  /* background-color: wheat; */
-  /* background-color: #1b1b1b; */
-  /* background-color: #101010; */
-  /* border-radius: 9px; */
   border: 1px dashed #611b1b;
-  /* border: 2px dashed #005050; */
   
-  /* border: 2px dashed #008080; */
 }
 #canviiEssentials {
   text-align: center;
 }
 #canviiStagingButtons {
-  /* height:45px; */
-  /* width: 30px; */
   color: #611b1b;
-  /* align: center; */
-  /* color: #008080; */
 }
 #loadGif {
   display: none;
   padding-left: 49.5%;
-  /* padding-right: auto; */
 }
-/* #consoleElements { */
-  /* align: center; */
-/* } */
 
 select {
   background: wheat;
-/*   background: #1b1b1b; */
-  /* background: #101010; */
   border-radius: 25px;
   border: 1px dashed #611b1b;
   text-align: center;
   color: #611b1b;
-/*   color: #614b4b; */
-/*   color: #008080; */
 }
 .button, [type='button'], button {
   border-radius: 25px;
   border: none;
   text-align: center;
   background: none;
-/*   font-size: 12px; */
-/*   color: #614b4b; */
   color: #611b1b;
-/*   color: #008080; */
   position: relative;
   font-size: 20px;
 }
@@ -90,9 +57,6 @@ a:hover {
 label:hover {
   font-style: oblique;
 }
-/* canvas:hover {
-  scale:1.025;
-} */
 button:hover {
   font-style: oblique;
 }
@@ -103,31 +67,21 @@ button:hover {
 .slider {
   height: 10px;
   border-radius: 5px;
-  /* background: wheat; */
-  /* background: wheat; */
-  /* background: #1b1b1b; */
   border: 1px dashed #611b1b;
-  /* background: #101010; */
   background: wheat;
   color: #611b1b;
-  /* color: #008080; */
-  /* color: #008080; */
   z-index: 1;
 }
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   border-radius: 50%; 
-  /* background: #1b1b1b; */
-  /* color: #008080; */
   cursor: pointer;
   border: none;
 }
 .slider::-moz-range-thumb {
   border-radius: 50%;
-  /* background: #614b4b; */
   background: #611b1b;
-  /* color: #008080; */
   cursor: pointer;
   border: none;
 }

@@ -7,19 +7,21 @@
 		<!-- unify -->
 			<!-- zooming -->
 	
-
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FilterShoppe</title>
+    <!-- <title>FilterShoppe</title> -->
+    <title>+gamma+</title>
     <link rel="stylesheet" href="./styles.css">
 		<script id='simpleImageCode' type="application/javascript" src="./SimpleImage.js" charset="utf-8"></script>
 		<script id='FilterShoppeCode' type="application/javascript" src="./scripts.js" charset="utf-8"></script>
 	</head>
 	<div id='pageHead'>
-		<h1 id='pageTitle'>FilterShoppe</h1>
+		<!-- <h1 id='pageTitle'>FilterShoppe</h1> -->
+		<h1 id='pageTitle'>+gamma+</h1>
 		<p style='text-align:center; font-style:oblique'>A digital lomography workstation</p>
 		<div id='navDivider' class='separator'>
 			<nav id='navigationTabs'>
@@ -48,8 +50,8 @@
 							<input style='display:none;' id='revertImageButton' class='button' type='button' value='Reset'>
 						</label> | 
 						<label for='cacheImageButton' class='button'>
-							Cache
-							<input style='display:none;' id='cacheImageButton' class='button' type='button' value='Transfer' onclick='cacheImage()'>
+							Commit
+							<input style='display:none;' id='cacheImageButton' class='button' type='button' value='Transfer' onclick='commitImage()'>
 						</label>
 					</div>
 					<div id='canviiZoomControls' class='controllers'>
@@ -129,6 +131,21 @@
 										<option class='blendModes' onclick='applySubtract(editingImage, blendingImage)'>Subtract</option>
 										<option class='blendModes' onclick='applyDarkenOnly(editingImage, blendingImage)'>Darken Only</option>
 										<option class='blendModes' onclick='applyLightenOnly(editingImage, blendingImage)'>Lighten Only</option>
+										
+										<option class='blendModes' onclick='applyDarkenRedOnly(editingImage, blendingImage)'>Darken Red Only</option>
+										<option class='blendModes' onclick='applyLightenRedOnly(editingImage, blendingImage)'>Lighten Red Only</option>
+										<option class='blendModes' onclick='applyDarkenGreenOnly(editingImage, blendingImage)'>Darken Green Only</option>
+										<option class='blendModes' onclick='applyLightenGreenOnly(editingImage, blendingImage)'>Lighten Green Only</option>
+										<option class='blendModes' onclick='applyDarkenBlueOnly(editingImage, blendingImage)'>Darken Blue Only</option>
+										<option class='blendModes' onclick='applyLightenBlueOnly(editingImage, blendingImage)'>Lighten Blue Only</option>
+										<option class='blendModes' onclick='applyDarkenRedGreenOnly(editingImage, blendingImage)'>Darken Red Green Only</option>
+										<option class='blendModes' onclick='applyLightenRedGreenOnly(editingImage, blendingImage)'>Lighten Red Green Only</option>
+										<option class='blendModes' onclick='applyDarkenRedBlueOnly(editingImage, blendingImage)'>Darken Red Blue Only</option>
+										<option class='blendModes' onclick='applyLightenRedBlueOnly(editingImage, blendingImage)'>Lighten Red Blue Only</option>
+										<option class='blendModes' onclick='applyDarkenGreenBlueOnly(editingImage, blendingImage)'>Darken Green Blue Only</option>
+										<option class='blendModes' onclick='applyLightenGreenBlueOnly(editingImage, blendingImage)'>Lighten Green Blue Only</option>
+										
+										
 										<option class='blendModes' onclick='applyW3CSoftlight(editingImage, blendingImage)'>Softlight (W3C)</option>
 										<option class='blendModes' onclick='applyIllusionsHUSoftlight(editingImage, blendingImage)'>Softlight (IllusionsHU)</option>
 										<option class='blendModes' onclick='applyPhotoShopSoftlight(editingImage, blendingImage)'>Softlight (Photoshop)</option>
@@ -201,7 +218,7 @@
 							<textarea contenteditable='true' id='textBox' spellcheck='true' type='message-box' value='' onchange='updateTextContent()'>Enter your text here</textarea>
 						</div>
 						<div id='filterControls' class='secondaryOptionPanel'>
-							<p id='filterWarning'>WARNING: Filters are applied automatically. Remember to cache the image before you advance with any unfamiliar filter</p>
+							<p id='filterWarning'>WARNING: Filters are applied automatically. Remember to commit the image before you advance with any unfamiliar filter</p>
 							<select id='filterSelector' onchange='toggleCustomFilter()'>
 								<option class='selectorDefault'>Filter Modes</option>
 								<option class='filterOption' onclick='applySepia(editingImage)'>Sepia</option>

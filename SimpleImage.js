@@ -101,6 +101,7 @@ SimpleImage = function () {
             } else if (typeof source == 'string') {
                 return __SimpleImageUtilities.makeHTMLImageFromURL(source, this);
             } else if (source instanceof HTMLInputElement && source.type == 'file') {
+                console.log(source);
                 return __SimpleImageUtilities.makeHTMLImageFromInput(source.files[0], this);
             } else if (source instanceof SimpleImage) {
                 return source.canvas;
